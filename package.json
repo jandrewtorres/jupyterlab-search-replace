@@ -1,15 +1,15 @@
 {
-  "name": "search-replace-notebook-extension",
+  "name": "find-replace-extension",
   "version": "0.1.0",
-  "description": "Search and replace / replace all for notebooks in jupyterlab.",
+  "description": "Find and replace side panel for documents and notebooks in jupyterlab.",
   "keywords": [
     "jupyter",
     "jupyterlab",
     "jupyterlab-extension"
   ],
-  "homepage": "https://github.com/jandrewtorres/search-and-replace-extension",
+  "homepage": "https://github.com/jandrewtorres/jupyterlab-find-replace-extension",
   "bugs": {
-    "url": "https://github.com/jandrewtorres/search-and-replace-extension/issues"
+    "url": "https://github.com/jandrewtorres/jupyterlab-find-replace-extension/issues"
   },
   "license": "BSD-3-Clause",
   "author": "John A Torres",
@@ -21,7 +21,7 @@
   "types": "lib/index.d.ts",
   "repository": {
     "type": "git",
-    "url": "https://github.com/jandrewtorres/search-and-replace-extension.git"
+    "url": "https://github.com/jandrewtorres/jupyterlab-find-replace-extension.git"
   },
   "scripts": {
     "build": "tsc",
@@ -30,7 +30,9 @@
     "prepare": "npm run clean && npm run build"
   },
   "dependencies": {
-    "jupyterlab": "^0.17.5"
+    "@jupyterlab/application": "^0.17.2",
+    "@jupyterlab/apputils": "^0.17.2",
+    "@phosphor/widgets": "^1.6.0"
   },
   "devDependencies": {
     "rimraf": "^2.6.1",
