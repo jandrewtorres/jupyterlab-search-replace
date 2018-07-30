@@ -24,9 +24,8 @@ export const SIDEBAR_TITLE: string = 'Find / Replace';
  * The command IDs used by the find-replace plugin.
  */
 namespace CommandIDs {
-  export const open: string = 'find-replace:open'; //
+  export const open: string = 'find-replace:open';
 }
-
 
 /**
  * Service providing interface to the find-replace-extension.
@@ -50,7 +49,10 @@ function activateFindReplacePlugin(
   restorer: ILayoutRestorer,
 ): void {
   // Create the sidebar widget
-  const sidebar: VDomRenderer<VDomModel> = new FindReplaceSidebar({ id: FIND_REPLACE_EXT_ID, title: SIDEBAR_TITLE });
+  const sidebar: VDomRenderer<VDomModel> = new FindReplaceSidebar({
+    id: FIND_REPLACE_EXT_ID,
+    title: SIDEBAR_TITLE
+  });
 
   // Add the sidebar to the restorer.
   restorer.add(sidebar, FIND_REPLACE_EXT_ID);

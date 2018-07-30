@@ -7,6 +7,8 @@ import * as ReactDOM from 'react-dom';
 
 import FindReplaceComponent from './components/FindReplaceComponent';
 
+const FIND_REPLACE_SIDEBAR_CLASS = 'jp-FindReplaceSidebar';
+
 /**
  * A side bar widget for document-wide find / replace.
  */
@@ -22,6 +24,7 @@ export default class FindReplaceSidebar extends VDomRenderer<VDomModel> {
     super();
     this.id = options.id;
     this.title.label = options.title;
+    this.addClass(FIND_REPLACE_SIDEBAR_CLASS);
   }
 
   /**
@@ -48,7 +51,7 @@ export default class FindReplaceSidebar extends VDomRenderer<VDomModel> {
   /**
    * Render UI react component
    */
-  render() {
+  protected render(): React.ReactElement<any> {
     return this.reactComponent;
   }
 }
