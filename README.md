@@ -2,10 +2,9 @@
 
 Search and replace / replace all for notebooks in jupyterlab.
 
-
 ## Prerequisites
 
-* JupyterLab
+- JupyterLab
 
 ## Installation
 
@@ -29,4 +28,3 @@ To rebuild the package and the JupyterLab app:
 npm run build
 jupyter lab build
 ```
-

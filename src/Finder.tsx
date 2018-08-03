@@ -1,4 +1,4 @@
-import { Widget, Title } from '@phosphor/widgets'
+import { Widget, Title } from '@phosphor/widgets';
 import { VDomRenderer } from '@jupyterlab/apputils';
 import { Message } from '@phosphor/messaging';
 
@@ -6,7 +6,7 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import FindReplaceComponent from './components/FindReplaceComponent';
-import { FinderModel } from "./FinderModel";
+import { FinderModel } from './FinderModel';
 
 const FIND_REPLACE_SIDEBAR_CLASS = 'jp-Finder';
 
@@ -37,13 +37,12 @@ export class Finder extends VDomRenderer<FinderModel> {
    */
   protected onUpdateRequest(msg: Message): void {
     // do nothing if not visible
-    if (!this.isVisible) return;
+    if (!this.isVisible) {
+      return;
+    }
     // Create sidebar react component
     this.reactComponent = <FindReplaceComponent />;
-    ReactDOM.render(
-      this.reactComponent,
-      document.getElementById(this.id)
-    );
+    ReactDOM.render(this.reactComponent, document.getElementById(this.id));
   }
 
   /**

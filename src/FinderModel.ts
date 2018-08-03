@@ -1,12 +1,12 @@
-import { VDomModel } from "@jupyterlab/apputils";
-import { IFinderService } from "./index";
+import { VDomModel } from '@jupyterlab/apputils';
+import { IFinderService } from './index';
 
 export class FinderModel extends VDomModel implements IFinderService {
-    constructor() {
-        super();
-    }
+  constructor() {
+    super();
+  }
 
   find() {
-      console.log('You found me!');
+    console.log('You found me!');
   }
 }

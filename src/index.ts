@@ -1,11 +1,6 @@
-import {
-  JupyterLab,
-  JupyterLabPlugin,
-} from '@jupyterlab/application';
+import { JupyterLab, JupyterLabPlugin } from '@jupyterlab/application';
 
-import {
-  ICommandPalette,
-} from '@jupyterlab/apputils';
+import { ICommandPalette } from '@jupyterlab/apputils';
 
 import { Finder } from './Finder';
 import { FinderModel } from './FinderModel';
@@ -19,8 +14,11 @@ import '../style/index.css';
 export const EXTENSION_ID: string = '@jupyterlab/finder-extension:plugin';
 export const PLUGIN_TITLE: string = 'Finder';
 
+/**
+ * Plugin Token
+ */
+// tslint:disable-next-line
 export const IFinderService = new Token<IFinderService>(EXTENSION_ID);
-
 
 export interface IFinderService {
   /**
@@ -42,11 +40,9 @@ namespace CommandIDs {
 const plugin: JupyterLabPlugin<IFinderService> = {
   id: EXTENSION_ID,
   autoStart: true,
-  requires: [
-    ICommandPalette,
-  ],
+  requires: [ICommandPalette],
   provides: IFinderService,
-  activate: activateFinderPlugin,
+  activate: activateFinderPlugin
 };
 
 /**
@@ -54,7 +50,7 @@ const plugin: JupyterLabPlugin<IFinderService> = {
  */
 function activateFinderPlugin(
   app: JupyterLab,
-  palette: ICommandPalette,
+  palette: ICommandPalette
 ): IFinderService {
   const { commands, shell } = app;
   const model = new FinderModel();
@@ -66,9 +62,7 @@ function activateFinderPlugin(
       const finder = new Finder({});
       finder.title.label = 'Finder';
       shell.addToLeftArea(finder, { rank: 600 });
-
     }
-
   });
   palette.addItem({ command: CommandIDs.open, category: PLUGIN_TITLE });
 
