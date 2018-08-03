@@ -1,6 +1,6 @@
 import * as React from 'react';
 
-const FIND_REPLACE_SIDEBAR_CLASS = 'jp-FindReplaceSidebar';
+const FIND_REPLACE_SIDEBAR_CLASS = 'jp-Finder';
 const SEARCH_CLASS = 'jp-FindReplace-search';
 const SEARCH_WRAPPER = 'jp-FindReplace-wrapper';
 const INPUT_CLASS = 'jp-FindReplace-input';
@@ -9,7 +9,7 @@ const BUTTON_CONTAINER = 'jp-FindReplace-button-container';
 /**
  * A react component that represents the UI contents of the extension sidebar.
  * This component is initially rendered by the parent Phosphor adapter, the
- * FindReplaceSidebar VDomRenderer.
+ * Finder VDomRenderer.
  */
 export default class FindReplaceComponent extends React.Component<any, any> {
   /**

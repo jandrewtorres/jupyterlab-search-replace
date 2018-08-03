@@ -1,29 +1,27 @@
 import { Widget, Title } from '@phosphor/widgets'
-import { VDomRenderer, VDomModel } from '@jupyterlab/apputils';
+import { VDomRenderer } from '@jupyterlab/apputils';
 import { Message } from '@phosphor/messaging';
 
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import FindReplaceComponent from './components/FindReplaceComponent';
+import { FinderModel } from "./FinderModel";
 
-const FIND_REPLACE_SIDEBAR_CLASS = 'jp-FindReplaceSidebar';
+const FIND_REPLACE_SIDEBAR_CLASS = 'jp-Finder';
 
 /**
  * A side bar widget for document-wide find / replace.
  */
-export default class FindReplaceSidebar extends VDomRenderer<VDomModel> {
-  id: string;
+export class Finder extends VDomRenderer<FinderModel> {
   title: Title<Widget>;
   reactComponent: React.ReactElement<any>;
 
   /**
    * Create new sidebar.
    */
-  constructor(options: FindReplaceSidebar.IOptions) {
+  constructor(options) {
     super();
-    this.id = options.id;
-    this.title.label = options.title;
     this.addClass(FIND_REPLACE_SIDEBAR_CLASS);
   }
 
@@ -53,15 +51,5 @@ export default class FindReplaceSidebar extends VDomRenderer<VDomModel> {
    */
   protected render(): React.ReactElement<any> {
     return this.reactComponent;
-  }
-}
-
-/**
- * Options interface.
- */
-export namespace FindReplaceSidebar {
-  export interface IOptions {
-    id: string;
-    title: string;
   }
 }
