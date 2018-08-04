@@ -29,7 +29,7 @@ namespace CommandIDs {
 /**
  * Service providing interface to the finder-plugin.
  */
-const plugin: JupyterLabPlugin<IFinderTracker> = {
+const plugin: JupyterLabPlugin<void> = {
   id: EXTENSION_ID,
   autoStart: true,
   requires: [ICommandPalette],
@@ -40,10 +40,7 @@ const plugin: JupyterLabPlugin<IFinderTracker> = {
 /**
  * Activate the finder-plugin.
  */
-function activateFinderPlugin(
-  app: JupyterLab,
-  palette: ICommandPalette
-): IFinderTracker {
+function activateFinderPlugin(app: JupyterLab, palette: ICommandPalette): void {
   const { commands, shell } = app;
   const namespace = 'finder';
   const tracker = new InstanceTracker<Finder>({ namespace });
@@ -72,7 +69,7 @@ function activateFinderPlugin(
 
   palette.addItem({ command: CommandIDs.open, category: PLUGIN_TITLE });
 
-  return tracker;
+  return;
 }
 
 /**
