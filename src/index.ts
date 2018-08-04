@@ -1,31 +1,24 @@
 import { JupyterLab, JupyterLabPlugin } from '@jupyterlab/application';
 
-import { ICommandPalette } from '@jupyterlab/apputils';
+import { ICommandPalette, InstanceTracker } from '@jupyterlab/apputils';
 
 import { Finder } from './Finder';
 import { FinderModel } from './FinderModel';
-import { Token } from '@phosphor/coreutils';
 
 import '../style/index.css';
+import { IFinderTracker } from './tracker';
 
 /**
  * Constants.
  */
 export const EXTENSION_ID: string = '@jupyterlab/finder-extension:plugin';
 export const PLUGIN_TITLE: string = 'Finder';
+const namespace = 'filebrowser';
 
 /**
  * Plugin Token
  */
 // tslint:disable-next-line
-export const IFinderService = new Token<IFinderService>(EXTENSION_ID);
-
-export interface IFinderService {
-  /**
-   * Text Documents
-   */
-  find();
-}
 
 /**
  * The command IDs used by the finder plugin.
@@ -37,11 +30,11 @@ namespace CommandIDs {
 /**
  * Service providing interface to the finder-plugin.
  */
-const plugin: JupyterLabPlugin<IFinderService> = {
+const plugin: JupyterLabPlugin<IFinderTracker> = {
   id: EXTENSION_ID,
   autoStart: true,
   requires: [ICommandPalette],
-  provides: IFinderService,
+  provides: IFinderTracker,
   activate: activateFinderPlugin
 };
 
@@ -51,25 +44,34 @@ const plugin: JupyterLabPlugin<IFinderService> = {
 function activateFinderPlugin(
   app: JupyterLab,
   palette: ICommandPalette
-): IFinderService {
+): IFinderTracker {
   const { commands, shell } = app;
+  const tracker = new InstanceTracker<Finder>({ namespace });
   const model = new FinderModel();
 
   // Add Commands
   commands.addCommand(CommandIDs.open, {
     label: 'Open Finder',
     execute: () => {
-      const finder = new Finder({});
+      let finder = tracker.currentWidget;
+      if (finder) {
+        shell.activateById('finder');
+        return;
+      }
+
+      finder = new Finder({});
       finder.id = 'finder';
       finder.title.label = 'Finder';
+      finder.model = model;
       shell.addToLeftArea(finder, { rank: 600 });
       shell.activateById(finder.id);
+      tracker.add(finder);
     }
   });
 
   palette.addItem({ command: CommandIDs.open, category: PLUGIN_TITLE });
 
-  return model;
+  return tracker;
 }
 
 /**

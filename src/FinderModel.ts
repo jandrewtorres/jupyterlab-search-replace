@@ -1,7 +1,6 @@
 import { VDomModel } from '@jupyterlab/apputils';
-import { IFinderService } from './index';
 
-export class FinderModel extends VDomModel implements IFinderService {
+export class FinderModel extends VDomModel {
   constructor() {
     super();
   }
