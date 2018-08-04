@@ -60,10 +60,13 @@ function activateFinderPlugin(
     label: 'Open Finder',
     execute: () => {
       const finder = new Finder({});
+      finder.id = 'finder';
       finder.title.label = 'Finder';
       shell.addToLeftArea(finder, { rank: 600 });
+      shell.activateById(finder.id);
     }
   });
+
   palette.addItem({ command: CommandIDs.open, category: PLUGIN_TITLE });
 
   return model;
