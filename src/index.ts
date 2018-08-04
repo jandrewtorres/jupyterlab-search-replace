@@ -13,7 +13,6 @@ import { IFinderTracker } from './tracker';
  */
 export const EXTENSION_ID: string = '@jupyterlab/finder-extension:plugin';
 export const PLUGIN_TITLE: string = 'Finder';
-const namespace = 'filebrowser';
 
 /**
  * Plugin Token
@@ -46,23 +45,25 @@ function activateFinderPlugin(
   palette: ICommandPalette
 ): IFinderTracker {
   const { commands, shell } = app;
+  const namespace = 'finder';
   const tracker = new InstanceTracker<Finder>({ namespace });
   const model = new FinderModel();
+  let finder: Finder;
 
   // Add Commands
   commands.addCommand(CommandIDs.open, {
     label: 'Open Finder',
     execute: () => {
-      let finder = tracker.currentWidget;
-      if (finder) {
-        shell.activateById('finder');
+      if (tracker.currentWidget) {
+        shell.activateById(tracker.currentWidget.id);
         return;
       }
 
       finder = new Finder({});
-      finder.id = 'finder';
+      finder.id = namespace;
       finder.title.label = 'Finder';
       finder.model = model;
+
       shell.addToLeftArea(finder, { rank: 600 });
       shell.activateById(finder.id);
       tracker.add(finder);
