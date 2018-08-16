@@ -83,7 +83,7 @@ const FinderPanel = props => (
           className={INPUT_CLASS}
           spellCheck={false}
           placeholder={'SEARCH'}
-          onChange={props.handleInputChange}
+          onChange={e => props.handleInputChange(e)}
         />
       </div>
     </div>

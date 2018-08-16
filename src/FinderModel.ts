@@ -4,12 +4,17 @@ import { ApplicationShell } from '@jupyterlab/application';
 import { INotebookTracker } from '@jupyterlab/notebook/lib/tracker';
 import { NotebookPanel } from '@jupyterlab/notebook';
 import { Cell } from '@jupyterlab/cells';
+import { IIterator, iter, find, toArray } from '@phosphor/algorithm';
+import { CodeEditor } from '@jupyterlab/codeeditor';
+import IRange = CodeEditor.IRange;
 
 export class FinderModel extends VDomModel {
   notebookTracker: INotebookTracker;
   shell: ApplicationShell;
   currentWidget: Widget;
-  results: any = {};
+  matches: IIterator<IMatch> = iter([]);
+  currentMatch: IMatch = null;
+  searchString: string = '';
 
   constructor(shell: ApplicationShell, notebookTracker: INotebookTracker) {
     super();
@@ -25,40 +30,86 @@ export class FinderModel extends VDomModel {
   }
 
   find(searchString: string): any {
-    if (!this.currentWidget) {
-      return;
+    if (this.searchString !== searchString) {
+      this.searchString = searchString;
+      this._updateMatches();
     }
-    let nb = this.currentWidget as NotebookPanel;
-    let cellsWidgets = nb.content.widgets as ReadonlyArray<Cell>;
-    cellsWidgets.forEach((cell, cellIndex) => {
-      let re = new RegExp(searchString, 'g');
-      let match;
-      let indices = [];
-
-      do {
-        match = re.exec(cell.editor.model.value.text);
-        if (match) {
-          indices.push(match.index);
-        }
-      } while (match);
-
-      if (indices.length > 0) {
-        cell.editor.focus();
-        cell.editor.setSelections(
-          indices.map(i => {
-            return {
-              start: cell.editor.getPositionAt(i),
-              end: cell.editor.getPositionAt(i + searchString.length)
-            };
-          })
-        );
-      }
-
-      this.results[cellIndex] = indices;
-    });
+    this._deselectCurrent();
+    this.currentMatch = this.matches.next();
+    if (!this.currentMatch) {
+      this._updateMatches();
+      this.currentMatch = this.matches.next();
+    }
+    this._selectCurrent();
   }
 
   findAll(searchString: string): any {
-    console.log('find all');
+    if (this.searchString !== searchString) {
+      this.searchString = searchString;
+    }
+    this._updateMatches();
+    this._selectAll();
   }
+
+  _updateMatches(): void {
+    if (!this.currentWidget) {
+      return;
+    }
+    this.matches = null;
+    let nb = this.currentWidget as NotebookPanel;
+    let cellsWidgets = nb.content.widgets as ReadonlyArray<Cell>;
+    cellsWidgets.forEach((cell, cellIndex) => {
+      let re = new RegExp(this.searchString, 'g');
+      let currMatches = [];
+      let match;
+      do {
+        match = re.exec(cell.editor.model.value.text);
+        if (match) {
+          currMatches.push({
+            start: cell.editor.getPositionAt(match.index),
+            end: cell.editor.getPositionAt(
+              match.index + this.searchString.length
+            ),
+            cellID: cell.model.id
+          });
+        }
+      } while (match);
+      this.matches = iter(toArray(this.matches).concat(currMatches));
+    });
+  }
+
+  _selectCurrent(): void {
+    if (!this.currentMatch) {
+      return;
+    }
+    let matchCell = this._getCurrentMatchCell();
+
+    matchCell.editor.focus();
+    matchCell.editor.setSelection(this.currentMatch);
+  }
+
+  _deselectCurrent(): void {
+    if (!this.currentMatch) {
+      return;
+    }
+    let matchCell = this._getCurrentMatchCell();
+    matchCell.editor.setCursorPosition(matchCell.editor.getPositionAt(0));
+  }
+
+  _getCurrentMatchCell() {
+    return find(
+      (this.currentWidget as NotebookPanel).content.widgets,
+      (cell: Cell) => {
+        return cell.model.id === this.currentMatch.cellID;
+      }
+    );
+  }
+
+  _selectAll(): void {
+    console.log('all');
+  }
+}
+
+interface IMatch extends IRange {
+  readonly cellID: string;
 }
