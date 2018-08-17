@@ -51,11 +51,11 @@ export class FinderModel extends VDomModel {
     this._selectAll();
   }
 
-  _updateMatches(): void {
+  _updateMatches(): any {
     if (!this.currentWidget) {
       return;
     }
-    this.matches = null;
+    this.matches = iter([]);
     let nb = this.currentWidget as NotebookPanel;
     let cellsWidgets = nb.content.widgets as ReadonlyArray<Cell>;
     cellsWidgets.forEach((cell, cellIndex) => {
