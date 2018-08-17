@@ -112,6 +112,22 @@ export class FinderModel extends VDomModel {
       this.currentMatch = this.matches.next();
     }
   }
+
+  replace(replaceString: string): void {
+    let matchCell = this._getCurrentMatchCell();
+    matchCell.editor.model.value.remove(
+      matchCell.editor.getOffsetAt(this.currentMatch.start),
+      matchCell.editor.getOffsetAt(this.currentMatch.end)
+    );
+    matchCell.editor.model.value.insert(
+      matchCell.editor.getOffsetAt(this.currentMatch.start),
+      replaceString
+    );
+    this._updateMatches();
+    this._deselectCurrent();
+    this.currentMatch = this.matches.next();
+    this._selectCurrent();
+  }
 }
 
 interface IMatch extends IRange {

@@ -9,6 +9,7 @@ import { FinderModel } from './FinderModel';
  */
 export class Finder extends VDomRenderer<FinderModel> {
   private _searchString = '';
+  private _replaceString = '';
 
   /**
    * Create new sidebar.
@@ -24,6 +25,14 @@ export class Finder extends VDomRenderer<FinderModel> {
    */
   handleInputChange = event => {
     this._searchString = event.target.value;
+  };
+
+  /**
+   * Handle replace input change.
+   * @param event
+   */
+  handleReplaceInputChange = event => {
+    this._replaceString = event.target.value;
   };
 
   /**
@@ -45,6 +54,15 @@ export class Finder extends VDomRenderer<FinderModel> {
   };
 
   /**
+   * Handle 'Replace' button clicked.
+   * @param event
+   */
+  replaceClicked = event => {
+    this.model.replace(this._replaceString);
+    event.stopPropagation();
+  };
+
+  /**
    * Render FinderPanel React Element
    */
   protected render(): React.ReactElement<any> {
@@ -53,6 +71,8 @@ export class Finder extends VDomRenderer<FinderModel> {
         handleInputChange={this.handleInputChange}
         findClicked={this.findClicked}
         findAllClicked={this.findAllClicked}
+        handleReplaceInputChange={this.handleReplaceInputChange}
+        replaceClicked={this.replaceClicked}
       />
     );
   }
@@ -82,7 +102,7 @@ const FinderPanel = props => (
         <input
           className={INPUT_CLASS}
           spellCheck={false}
-          placeholder={'SEARCH'}
+          placeholder={'Find...'}
           onChange={e => props.handleInputChange(e)}
         />
       </div>
@@ -93,6 +113,21 @@ const FinderPanel = props => (
       </button>
       <button className={BUTTON_CLASS} onClick={e => props.findAllClicked(e)}>
         Find All
+      </button>
+    </div>
+    <div className={SEARCH_CLASS}>
+      <div className={SEARCH_WRAPPER}>
+        <input
+          className={INPUT_CLASS}
+          spellCheck={false}
+          placeholder={'Replace...'}
+          onChange={e => props.handleReplaceInputChange(e)}
+        />
+      </div>
+    </div>
+    <div className={BUTTON_CONTAINER}>
+      <button className={BUTTON_CLASS} onClick={e => props.replaceClicked(e)}>
+        Replace
       </button>
     </div>
   </div>
