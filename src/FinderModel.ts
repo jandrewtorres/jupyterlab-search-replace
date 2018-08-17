@@ -106,7 +106,11 @@ export class FinderModel extends VDomModel {
   }
 
   _selectAll(): void {
-    console.log('all');
+    this.currentMatch = this.matches.next();
+    while (this.currentMatch) {
+      this._selectCurrent();
+      this.currentMatch = this.matches.next();
+    }
   }
 }
 
