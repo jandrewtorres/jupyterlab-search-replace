@@ -14,7 +14,8 @@ export class FinderModel extends VDomModel {
   currentWidget: Widget;
   matches: IIterator<IMatch> = iter([]);
   currentMatch: IMatch = null;
-  searchString: string = '';
+  private _searchString: string = '';
+  public replaceString: string = '';
 
   constructor(shell: ApplicationShell, notebookTracker: INotebookTracker) {
     super();
@@ -29,11 +30,18 @@ export class FinderModel extends VDomModel {
     });
   }
 
-  find(searchString: string): any {
-    if (this.searchString !== searchString) {
-      this.searchString = searchString;
+  set searchString(searchString: string) {
+    if (searchString !== this._searchString) {
+      this._searchString = searchString;
       this._updateMatches();
     }
+  }
+
+  get searchString(): string {
+    return this._searchString;
+  }
+
+  find(): any {
     this._deselectCurrent();
     this.currentMatch = this.matches.next();
     if (!this.currentMatch) {
@@ -43,10 +51,7 @@ export class FinderModel extends VDomModel {
     this._selectCurrent();
   }
 
-  findAll(searchString: string): any {
-    if (this.searchString !== searchString) {
-      this.searchString = searchString;
-    }
+  findAll(): any {
     this._updateMatches();
     this._selectAll();
   }
@@ -113,7 +118,7 @@ export class FinderModel extends VDomModel {
     }
   }
 
-  replace(replaceString: string): void {
+  replace(): void {
     let matchCell = this._getCurrentMatchCell();
     matchCell.editor.model.value.remove(
       matchCell.editor.getOffsetAt(this.currentMatch.start),
@@ -121,7 +126,7 @@ export class FinderModel extends VDomModel {
     );
     matchCell.editor.model.value.insert(
       matchCell.editor.getOffsetAt(this.currentMatch.start),
-      replaceString
+      this.replaceString
     );
     this._updateMatches();
     this._deselectCurrent();

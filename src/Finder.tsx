@@ -8,9 +8,6 @@ import { FinderModel } from './FinderModel';
  * The Finder UI Component.
  */
 export class Finder extends VDomRenderer<FinderModel> {
-  private _searchString = '';
-  private _replaceString = '';
-
   /**
    * Create new sidebar.
    */
@@ -24,7 +21,7 @@ export class Finder extends VDomRenderer<FinderModel> {
    * @param event
    */
   handleInputChange = event => {
-    this._searchString = event.target.value;
+    this.model.searchString = event.target.value;
   };
 
   /**
@@ -32,7 +29,7 @@ export class Finder extends VDomRenderer<FinderModel> {
    * @param event
    */
   handleReplaceInputChange = event => {
-    this._replaceString = event.target.value;
+    this.model.replaceString = event.target.value;
   };
 
   /**
@@ -40,7 +37,7 @@ export class Finder extends VDomRenderer<FinderModel> {
    * @param event
    */
   findClicked = event => {
-    this.model.find(this._searchString);
+    this.model.find();
     event.stopPropagation();
   };
 
@@ -49,7 +46,7 @@ export class Finder extends VDomRenderer<FinderModel> {
    * @param event
    */
   findAllClicked = event => {
-    this.model.findAll(this._searchString);
+    this.model.findAll();
     event.stopPropagation();
   };
 
@@ -58,7 +55,7 @@ export class Finder extends VDomRenderer<FinderModel> {
    * @param event
    */
   replaceClicked = event => {
-    this.model.replace(this._replaceString);
+    this.model.replace();
     event.stopPropagation();
   };
 
