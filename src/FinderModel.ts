@@ -41,7 +41,7 @@ export class FinderModel extends VDomModel {
     return this._searchString;
   }
 
-  find(): any {
+  selectNext(): any {
     this._deselectCurrent();
     this.currentMatch = this.matches.next();
     if (!this.currentMatch) {
@@ -51,8 +51,7 @@ export class FinderModel extends VDomModel {
     this._selectCurrent();
   }
 
-  findAll(): any {
-    this._updateMatches();
+  selectAll(): any {
     this._selectAll();
   }
 

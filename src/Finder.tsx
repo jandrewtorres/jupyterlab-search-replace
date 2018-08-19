@@ -37,7 +37,7 @@ export class Finder extends VDomRenderer<FinderModel> {
    * @param event
    */
   findClicked = event => {
-    this.model.find();
+    this.model.selectNext();
     event.stopPropagation();
   };
 
@@ -46,7 +46,7 @@ export class Finder extends VDomRenderer<FinderModel> {
    * @param event
    */
   findAllClicked = event => {
-    this.model.findAll();
+    this.model.selectAll();
     event.stopPropagation();
   };
 
