@@ -1,9 +1,10 @@
 import { JupyterLab, JupyterLabPlugin } from '@jupyterlab/application';
 import { ICommandPalette, InstanceTracker } from '@jupyterlab/apputils';
 import { Finder } from './Finder';
-import { FinderModel } from './FinderModel';
 import { INotebookTracker } from '@jupyterlab/notebook';
 import '../style/index.css';
+import { FinderToolsModel } from './FinderToolsModel';
+import { IDocumentManager } from '@jupyterlab/docmanager';
 
 /**
  * Constants.
@@ -24,7 +25,7 @@ namespace CommandIDs {
 const plugin: JupyterLabPlugin<void> = {
   id: EXTENSION_ID,
   autoStart: true,
-  requires: [ICommandPalette, INotebookTracker],
+  requires: [ICommandPalette, INotebookTracker, IDocumentManager],
   activate: activateFinderPlugin
 };
 
@@ -34,16 +35,13 @@ const plugin: JupyterLabPlugin<void> = {
 function activateFinderPlugin(
   app: JupyterLab,
   palette: ICommandPalette,
-  notebookTracker: INotebookTracker
+  notebookTracker: INotebookTracker,
+  docManager: IDocumentManager
 ): void {
   const { commands, shell } = app;
   const namespace = 'finder';
   // Tracker is used to ensure there is only one instance of the Finder
   const tracker = new InstanceTracker<Finder>({ namespace });
-  // Finder Model
-  const model = new FinderModel(shell, notebookTracker);
-  // Finder View
-  let finder: Finder;
 
   // Add Commands
   commands.addCommand(CommandIDs.open, {
@@ -55,10 +53,17 @@ function activateFinderPlugin(
         return;
       }
 
-      // Initialize view and set model.
-      finder = new Finder();
+      // Initialize view.
+      const finder = new Finder();
       finder.id = namespace;
       finder.title.label = 'Finder';
+      // Initialize model.
+      const model = new FinderToolsModel({
+        shell: shell,
+        docManager: docManager,
+        notebookTracker: notebookTracker
+      });
+
       finder.model = model;
 
       // Add to left area and activate.

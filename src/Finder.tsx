@@ -1,13 +1,12 @@
 import { VDomRenderer } from '@jupyterlab/apputils';
 
 import * as React from 'react';
-
-import { FinderModel } from './FinderModel';
+import { FinderToolsModel } from './FinderToolsModel';
 
 /**
  * The Finder UI Component.
  */
-export class Finder extends VDomRenderer<FinderModel> {
+export class Finder extends VDomRenderer<FinderToolsModel> {
   /**
    * Create new sidebar.
    */
@@ -21,15 +20,7 @@ export class Finder extends VDomRenderer<FinderModel> {
    * @param event
    */
   handleInputChange = event => {
-    this.model.searchString = event.target.value;
-  };
-
-  /**
-   * Handle replace input change.
-   * @param event
-   */
-  handleReplaceInputChange = event => {
-    this.model.replaceString = event.target.value;
+    this.model.setQueryString(event.target.value);
   };
 
   /**
@@ -37,7 +28,7 @@ export class Finder extends VDomRenderer<FinderModel> {
    * @param event
    */
   findClicked = event => {
-    this.model.selectNext();
+    // this.model.selectNext();
     event.stopPropagation();
   };
 
@@ -45,8 +36,8 @@ export class Finder extends VDomRenderer<FinderModel> {
    * Handle 'Find All' button clicked.
    * @param event
    */
-  findAllClicked = event => {
-    this.model.selectAll();
+  selectAllClicked = event => {
+    // this.model.
     event.stopPropagation();
   };
 
@@ -55,7 +46,7 @@ export class Finder extends VDomRenderer<FinderModel> {
    * @param event
    */
   replaceClicked = event => {
-    this.model.replace();
+    // this.model.matchReplacer.replaceSelections(this.model.matchSelector);
     event.stopPropagation();
   };
 
@@ -67,8 +58,7 @@ export class Finder extends VDomRenderer<FinderModel> {
       <FinderPanel
         handleInputChange={this.handleInputChange}
         findClicked={this.findClicked}
-        findAllClicked={this.findAllClicked}
-        handleReplaceInputChange={this.handleReplaceInputChange}
+        findAllClicked={this.selectAllClicked}
         replaceClicked={this.replaceClicked}
       />
     );
@@ -118,7 +108,6 @@ const FinderPanel = props => (
           className={INPUT_CLASS}
           spellCheck={false}
           placeholder={'Replace...'}
-          onChange={e => props.handleReplaceInputChange(e)}
         />
       </div>
     </div>
