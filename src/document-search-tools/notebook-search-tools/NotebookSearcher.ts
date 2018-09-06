@@ -89,12 +89,17 @@ export class CellSearcher {
     return this._matches;
   }
 
+  private escapeRegExp(str: string): string {
+    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  }
+
   private _refreshMatches(): void {
     this._matches = [];
     if (this._query.length === 0) {
       return;
     }
-    let re = new RegExp(this._query, 'g');
+
+    let re = new RegExp(this.escapeRegExp(this._query), 'g');
     let match;
     do {
       match = re.exec(this._cell.value.text);
