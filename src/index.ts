@@ -3,7 +3,7 @@ import { ICommandPalette, InstanceTracker } from '@jupyterlab/apputils';
 import { Finder } from './Finder';
 import { INotebookTracker } from '@jupyterlab/notebook';
 import '../style/index.css';
-import { FinderToolsModel } from './FinderToolsModel';
+import { SearchToolsModel } from './SearchToolsModel';
 import { IDocumentManager } from '@jupyterlab/docmanager';
 
 /**
@@ -58,7 +58,7 @@ function activateFinderPlugin(
       finder.id = namespace;
       finder.title.label = 'Finder';
       // Initialize model.
-      const model = new FinderToolsModel({
+      const model = new SearchToolsModel({
         shell: shell,
         docManager: docManager,
         notebookTracker: notebookTracker

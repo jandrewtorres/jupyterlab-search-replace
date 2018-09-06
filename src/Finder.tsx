@@ -1,12 +1,12 @@
 import { VDomRenderer } from '@jupyterlab/apputils';
 
 import * as React from 'react';
-import { FinderToolsModel } from './FinderToolsModel';
+import { SearchToolsModel } from './SearchToolsModel';
 
 /**
  * The Finder UI Component.
  */
-export class Finder extends VDomRenderer<FinderToolsModel> {
+export class Finder extends VDomRenderer<SearchToolsModel> {
   /**
    * Create new sidebar.
    */
@@ -20,7 +20,10 @@ export class Finder extends VDomRenderer<FinderToolsModel> {
    * @param event
    */
   handleInputChange = event => {
-    this.model.setQueryString(event.target.value);
+    if (!this.model) {
+      console.log('model not def');
+    }
+    this.model.query = event.target.value;
   };
 
   /**
