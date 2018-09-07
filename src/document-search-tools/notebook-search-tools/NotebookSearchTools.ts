@@ -8,7 +8,7 @@ export class NotebookSearchTools
     this.searcher = new NotebookSearcher(nbPanel.model.cells);
   }
 
-  set query(query: string) {
+  set query(query: SearchTools.IDocumentQuery) {
     this.searcher.query = query;
     console.log(this.searcher.matches);
   }
@@ -17,7 +17,7 @@ export class NotebookSearchTools
 }
 
 export namespace NotebookSearchTools {
-  export interface INotebookMatch extends SearchTools.IDocumentMatch {
+  export interface INotebookMatch extends SearchTools.IMatchRange {
     cellID: string;
   }
 }

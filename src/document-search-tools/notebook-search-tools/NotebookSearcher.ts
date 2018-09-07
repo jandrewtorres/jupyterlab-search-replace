@@ -9,6 +9,7 @@ import { NotebookPanel } from '@jupyterlab/notebook';
 import { SearchTools } from '../SearchTools';
 import { NotebookSearchTools } from './NotebookSearchTools';
 import INotebookMatch = NotebookSearchTools.INotebookMatch;
+import IDocumentQuery = SearchTools.IDocumentQuery;
 
 export class NotebookSearcher
   implements SearchTools.IDocumentSearcher<NotebookPanel> {
@@ -31,7 +32,7 @@ export class NotebookSearcher
     });
   }
 
-  set query(query: string) {
+  set query(query: IDocumentQuery) {
     each(this._cells, (cell: CellSearcher) => {
       cell.query = query;
     });
@@ -42,12 +43,15 @@ export class NotebookSearcher
     return this._changed;
   }
 
-  get matches(): INotebookMatch[] {
+  get matches(): SearchTools.IDocumentMatches {
     let matches: INotebookMatch[] = [];
     each(this._cells, (cell: CellSearcher) => {
       matches = matches.concat(cell.matches);
     });
-    return matches;
+    return {
+      documentType: 'notebook',
+      matches
+    };
   }
 
   private _onCellListChanged(args: IObservableList.IChangedArgs<ICellModel>) {
@@ -76,7 +80,7 @@ export class CellSearcher {
     });
   }
 
-  set query(query: string) {
+  set query(query: IDocumentQuery) {
     this._query = query;
     this._refreshMatches();
   }
@@ -89,33 +93,20 @@ export class CellSearcher {
     return this._matches;
   }
 
-  private escapeRegExp(str: string): string {
-    return str.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-  }
-
   private _refreshMatches(): void {
-    this._matches = [];
-    if (this._query.length === 0) {
-      return;
-    }
-
-    let re = new RegExp(this.escapeRegExp(this._query), 'g');
-    let match;
-    do {
-      match = re.exec(this._cell.value.text);
-      if (match) {
-        this._matches.push({
-          documentType: 'notebook',
-          start: match.index,
-          end: match.index + this._query.length,
-          cellID: this._cell.id
-        });
+    this._matches = SearchTools.search(this._query, this._cell.value.text).map(
+      (range: SearchTools.IMatchRange): INotebookMatch => {
+        return {
+          cellID: this._cell.id,
+          start: range.start,
+          end: range.end
+        };
       }
-    } while (match);
+    );
   }
 
   private _cell: ICellModel;
-  private _query: string = '';
+  private _query: IDocumentQuery;
   private _matches: INotebookMatch[] = [];
   private _changed = new Signal<this, void>(this);
 }

@@ -10,22 +10,21 @@ export class SearchToolsModel extends VDomModel {
   _currentWidget: SearchToolsModel.ICurrentWidget<any>;
   _docManager: IDocumentManager;
   _notebookTracker: INotebookTracker;
-  _shell: ApplicationShell;
 
   constructor(options: SearchToolsModel.IOptions) {
     super();
     this._docManager = options.docManager;
     this._notebookTracker = options.notebookTracker;
-    this._shell = options.shell;
-
-    this.currentWidget = this._shell.currentWidget;
-    this._shell.currentChanged.connect((sender, args) => {
-      this.currentWidget = this._shell.currentWidget;
+    this.currentWidget = options.shell.currentWidget;
+    options.shell.currentChanged.connect((sender, args) => {
+      this.currentWidget = options.shell.currentWidget;
+      console.log(options.shell.currentWidget);
     });
   }
 
   set currentWidget(widget: Widget | null) {
     const type = this._docManager.contextForWidget(widget).contentsModel.type;
+    console.log(type);
     if (type === 'notebook') {
       this._currentWidget = {
         widget: widget as NotebookPanel,
@@ -36,7 +35,7 @@ export class SearchToolsModel extends VDomModel {
     }
   }
 
-  set query(query: string) {
+  set query(query: SearchTools.IDocumentQuery) {
     this._currentWidget.tools.query = query;
   }
 }

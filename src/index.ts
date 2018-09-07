@@ -1,10 +1,10 @@
 import { JupyterLab, JupyterLabPlugin } from '@jupyterlab/application';
 import { ICommandPalette, InstanceTracker } from '@jupyterlab/apputils';
-import { Finder } from './Finder';
 import { INotebookTracker } from '@jupyterlab/notebook';
 import '../style/index.css';
 import { SearchToolsModel } from './SearchToolsModel';
 import { IDocumentManager } from '@jupyterlab/docmanager';
+import { SearchToolsPanel } from './SearchToolsPanel';
 
 /**
  * Constants.
@@ -39,9 +39,9 @@ function activateFinderPlugin(
   docManager: IDocumentManager
 ): void {
   const { commands, shell } = app;
-  const namespace = 'finder';
+  const namespace = 'search-tools';
   // Tracker is used to ensure there is only one instance of the Finder
-  const tracker = new InstanceTracker<Finder>({ namespace });
+  const tracker = new InstanceTracker<SearchToolsPanel>({ namespace });
 
   // Add Commands
   commands.addCommand(CommandIDs.open, {
@@ -53,25 +53,26 @@ function activateFinderPlugin(
         return;
       }
 
-      // Initialize view.
-      const finder = new Finder();
-      finder.id = namespace;
-      finder.title.label = 'Finder';
+      // Initialize view panel.
+      const panel = new SearchToolsPanel();
+      panel.id = namespace;
+      panel.title.label = 'Search Tools';
+
       // Initialize model.
       const model = new SearchToolsModel({
-        shell: shell,
-        docManager: docManager,
-        notebookTracker: notebookTracker
+        shell,
+        docManager,
+        notebookTracker
       });
 
-      finder.model = model;
+      panel.model = model;
 
       // Add to left area and activate.
-      shell.addToLeftArea(finder, { rank: 600 });
-      shell.activateById(finder.id);
+      shell.addToLeftArea(panel, { rank: 600 });
+      shell.activateById(panel.id);
 
       // Add to tracker
-      tracker.add(finder);
+      tracker.add(panel);
     }
   });
 
