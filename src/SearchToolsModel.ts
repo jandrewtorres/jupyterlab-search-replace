@@ -18,7 +18,6 @@ export class SearchToolsModel extends VDomModel {
     this.currentWidget = options.shell.currentWidget;
     options.shell.currentChanged.connect((sender, args) => {
       this.currentWidget = options.shell.currentWidget;
-      console.log(options.shell.currentWidget);
     });
   }
 

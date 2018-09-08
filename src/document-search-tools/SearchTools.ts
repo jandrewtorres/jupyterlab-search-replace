@@ -67,7 +67,7 @@ export namespace SearchTools {
       if (match) {
         matches.push({
           start: match.index,
-          end: match.index + match.length
+          end: match.index + query.value.length
         });
       }
     } while (match);

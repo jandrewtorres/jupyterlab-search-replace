@@ -20,10 +20,6 @@ export class SearchToolsPanel extends VDomRenderer<SearchToolsModel> {
    * @param event
    */
   handleInputChange = event => {
-    if (!this.model) {
-      console.log('model not def');
-    }
-    console.log(event.target.value);
     this.model.query = {
       value: event.target.value,
       isRegEx: false, // need to add checkbox

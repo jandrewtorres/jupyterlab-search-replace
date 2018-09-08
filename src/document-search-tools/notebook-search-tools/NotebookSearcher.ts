@@ -46,13 +46,17 @@ export class NotebookSearcher
   get matches(): SearchTools.IDocumentMatches {
     let matches: INotebookMatch[] = [];
     each(this._cells, (cell: CellSearcher) => {
-      matches = matches.concat(cell.matches);
+      if (cell.matches.length > 0) {
+        matches = matches.concat(cell.matches);
+      }
     });
     return {
       documentType: 'notebook',
       matches
     };
   }
+
+  // get matchesForCell(cell: Cell): INotebookMatch {}
 
   private _onCellListChanged(args: IObservableList.IChangedArgs<ICellModel>) {
     if (args.type === 'add') {
