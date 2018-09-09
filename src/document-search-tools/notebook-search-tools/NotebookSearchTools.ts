@@ -17,7 +17,7 @@ export class NotebookSearchTools
   private _panel: NotebookPanel;
 
   constructor(nbPanel: NotebookPanel) {
-    this.searcher = new NotebookSearcher(nbPanel.model.cells);
+    this.searcher = new NotebookSearcher(nbPanel);
     this.searcher.changed.connect((sender, args) => {
       this._updateMatches();
     });
@@ -58,7 +58,7 @@ export class NotebookSearchTools
           find(
             this._matches.matches as NotebookSearchTools.INotebookMatch[],
             nbMatch => {
-              return nbMatch.cellID === cell.model.id;
+              return nbMatch.cell.model.id === cell.model.id;
             }
           )
         );
@@ -74,8 +74,8 @@ export class NotebookSearchTools
             this._matchesForCell(cell),
             (match: NotebookSearchTools.INotebookMatch) => {
               return {
-                start: cell.editor.getPositionAt(match.start),
-                end: cell.editor.getPositionAt(match.end)
+                start: match.range.start,
+                end: match.range.end
               };
             }
           )
@@ -90,34 +90,16 @@ export class NotebookSearchTools
     return filter(
       this._matches.matches as NotebookSearchTools.INotebookMatch[],
       (match: NotebookSearchTools.INotebookMatch) => {
-        return match.cellID === cell.model.id;
+        return match.cell.model.id === cell.model.id;
       }
     );
   }
-
-  /*
-    // If previous selection index is greater than matches list's size,
-    // set selected index to last match in list.
-    if (this._selectedIndex > this._matches.matches.length) {
-      this._selectedIndex = this._matches.matches.length - 1;
-    }
-
-    // Get the cell ID of current selection
-    const cellID: string = (this._matches.matches[
-      this._selectedIndex
-    ] as NotebookSearchTools.INotebookMatch).cellID;
-
-    // Get the cell
-    const cell: Cell = find(this._panel.content.widgets, (cell: Cell) => {
-      return cell.model.id === cellID;
-    });
-    */
 
   searcher: SearchTools.IDocumentSearcher<NotebookPanel>;
 }
 
 export namespace NotebookSearchTools {
-  export interface INotebookMatch extends SearchTools.IMatchRange {
-    cellID: string;
+  export interface INotebookMatch extends SearchTools.IDocumentMatch {
+    cell: Cell;
   }
 }

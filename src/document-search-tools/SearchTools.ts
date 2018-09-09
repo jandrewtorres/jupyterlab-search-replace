@@ -1,5 +1,6 @@
 import { ISignal } from '@phosphor/signaling';
 import { IDocumentWidget } from '@jupyterlab/docregistry';
+import { CodeEditor } from '@jupyterlab/codeeditor';
 
 export namespace SearchTools {
   export interface IDocumentSearchTools<T extends IDocumentWidget> {
@@ -16,15 +17,11 @@ export namespace SearchTools {
 
   export interface IDocumentMatches {
     documentType: string;
-    matches: IMatchRange[];
+    matches: SearchTools.IDocumentMatch[];
   }
 
-  /**
-   * Offset values for a match.
-   */
-  export interface IMatchRange {
-    start: number;
-    end: number;
+  export interface IDocumentMatch {
+    range: CodeEditor.IRange;
   }
 
   /**
@@ -45,25 +42,30 @@ export namespace SearchTools {
    * @param query The query to be executed.
    * @param text The text to be queried.
    */
-  export function search(query: IDocumentQuery, text: string): IMatchRange[] {
-    let matches: IMatchRange[] = [];
+  export function search(
+    query: IDocumentQuery,
+    target: string
+  ): CodeEditor.IRange[] {
+    let matches: CodeEditor.IRange[] = [];
 
     // Return if query has no value
     if (query.value.length === 0) {
       return matches;
     }
 
-    // Assemble RegEx pattern and flags
+    // Assemble RegEx object parameters from IDocumentQuery values.
+    //   - pattern: represents actual query value as either regex or literal.
+    //   - flags: 'g' always set, i indicates ignoreCase.
     const pattern: string = query.isRegEx
       ? query.value
       : query.value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
     const flags: string = 'g' + (query.ignoreCase ? 'i' : '');
 
-    // Get offset range for all matches
+    // Find all match offset ranges.
     let re = new RegExp(pattern, flags);
     let match;
     do {
-      match = re.exec(text);
+      match = re.exec(target);
       if (match) {
         matches.push({
           start: match.index,
@@ -72,6 +74,7 @@ export namespace SearchTools {
       }
     } while (match);
 
+    // Return the match offset ranges.
     return matches;
   }
 }
