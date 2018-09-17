@@ -1,23 +1,21 @@
 import { NotebookPanel } from '@jupyterlab/notebook';
-import { NotebookSearchTools } from './document-search-tools/notebook-search-tools/NotebookSearchTools';
-import { SearchTools } from './document-search-tools/SearchTools';
 import { IDocumentWidget } from '@jupyterlab/docregistry';
+import { SearchReplace } from './document-search-tools/SearchTools';
+import { NotebookSearchReplacePlugin } from './document-search-tools/notebook-search-tools/NotebookSearchTools';
+import { Widget } from '@phosphor/widgets';
 
-export interface ISearchToolsFactory<T extends IDocumentWidget> {
-  createSearchTools(
-    document: IDocumentWidget
-  ): SearchTools.IDocumentSearchTools<T>;
+export interface ISearchToolsFactory {
+  createSearchTools(document: Widget): SearchReplace.ISearchReplacePlugin;
 }
 
-export class NotebookSearchToolsFactory
-  implements ISearchToolsFactory<NotebookPanel> {
-  createSearchTools(document: IDocumentWidget): NotebookSearchTools {
-    return new NotebookSearchTools(document as NotebookPanel);
+export class NotebookSearchToolsFactory implements ISearchToolsFactory {
+  createSearchTools(document: IDocumentWidget): NotebookSearchReplacePlugin {
+    return new NotebookSearchReplacePlugin(document as NotebookPanel);
   }
 }
 
 export class SearchToolsFactoryProducer {
-  static getFactory(type: string): ISearchToolsFactory<any> | null {
+  static getFactory(type: string): ISearchToolsFactory | null {
     let factory;
     switch (type) {
       case 'notebook':

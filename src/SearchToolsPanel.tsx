@@ -16,7 +16,7 @@ export class SearchToolsPanel extends VDomRenderer<SearchToolsModel> {
   }
 
   /**
-   * Handle search input change.
+   * Handle getMatchRanges input change.
    * @param event
    */
   handleInputChange = event => {
@@ -105,7 +105,7 @@ export class SearchToolsPanel extends VDomRenderer<SearchToolsModel> {
  * CSS Classes for Finder Panel Component.
  */
 const FIND_REPLACE_SIDEBAR_CLASS = 'jp-Finder';
-const SEARCH_CLASS = 'jp-FindReplace-search';
+const SEARCH_CLASS = 'jp-FindReplace-getMatchRanges';
 const SEARCH_WRAPPER = 'jp-FindReplace-wrapper';
 const INPUT_CLASS = 'jp-FindReplace-input';
 const BUTTON_CLASS = 'jp-FindReplace-button';

@@ -1,33 +1,24 @@
-import { ISignal } from '@phosphor/signaling';
-import { IDocumentWidget } from '@jupyterlab/docregistry';
-import { CodeEditor } from '@jupyterlab/codeeditor';
+export namespace SearchReplace {
+  export interface ISearchReplacePlugin {
+    setQuery: (query: IQuery) => void;
 
-export namespace SearchTools {
-  export interface IDocumentSearchTools<T extends IDocumentWidget> {
-    searcher: IDocumentSearcher<T>;
-    query: IDocumentQuery;
+    next: () => void;
+    prev: () => void;
+    all: () => void;
+
+    replace?: () => void;
+    replaceAll?: () => void;
   }
 
-  export interface IDocumentSearcher<T extends IDocumentWidget> {
-    // search(query: IDocumentQuery): IDocumentMatches;
-    query: IDocumentQuery;
-    matches: IDocumentMatches;
-    changed: ISignal<this, void>;
-  }
-
-  export interface IDocumentMatches {
-    documentType: string;
-    matches: SearchTools.IDocumentMatch[];
-  }
-
-  export interface IDocumentMatch {
-    range: CodeEditor.IRange;
+  export interface IMatch {
+    start: number;
+    end: number;
   }
 
   /**
-   * A query that can be executed on a document.
+   * A query value for the search.
    */
-  export interface IDocumentQuery {
+  export interface IQuery {
     /** The query value */
     value: string;
     /** RegEx query or exact match */
@@ -37,31 +28,28 @@ export namespace SearchTools {
   }
 
   /**
-   * Queries a string and returns an array of matches.
+   * Queries a string and returns an array of offset ranges for the matches.
    *
    * @param query The query to be executed.
-   * @param text The text to be queried.
+   * @param target The text to be queried.
    */
-  export function search(
-    query: IDocumentQuery,
-    target: string
-  ): CodeEditor.IRange[] {
-    let matches: CodeEditor.IRange[] = [];
+  export function getMatchRanges(query: IQuery, target: string): IMatch[] {
+    let matches: IMatch[] = [];
 
     // Return if query has no value
     if (query.value.length === 0) {
       return matches;
     }
 
-    // Assemble RegEx object parameters from IDocumentQuery values.
+    // Assemble RegEx object parameters from IQuery values.
     //   - pattern: represents actual query value as either regex or literal.
     //   - flags: 'g' always set, i indicates ignoreCase.
     const pattern: string = query.isRegEx
       ? query.value
       : query.value.replace(/[-[\]{}()*+?.,\\^$|#\s]/g, '\\$&');
     const flags: string = 'g' + (query.ignoreCase ? 'i' : '');
-
     // Find all match offset ranges.
+
     let re = new RegExp(pattern, flags);
     let match;
     do {

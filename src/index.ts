@@ -39,7 +39,7 @@ function activateFinderPlugin(
   docManager: IDocumentManager
 ): void {
   const { commands, shell } = app;
-  const namespace = 'search-tools';
+  const namespace = 'getMatchRanges-tools';
   // Tracker is used to ensure there is only one instance of the Finder
   const tracker = new InstanceTracker<SearchToolsPanel>({ namespace });
 
