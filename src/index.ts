@@ -1,10 +1,9 @@
 import { JupyterLab, JupyterLabPlugin } from '@jupyterlab/application';
 import { ICommandPalette } from '@jupyterlab/apputils';
-import { INotebookTracker } from '@jupyterlab/notebook';
-import '../style/index.css';
 import { SearchReplaceModel } from './SearchReplaceModel';
 import { IDocumentManager } from '@jupyterlab/docmanager';
 import { SearchReplacePanel } from './SearchReplacePanel';
+import '../style/index.css';
 
 /**
  * Constants.
@@ -17,7 +16,7 @@ export const EXTENSION_ID: string = '@jupyterlab/searchreplace:plugin';
 const plugin: JupyterLabPlugin<void> = {
   id: EXTENSION_ID,
   autoStart: true,
-  requires: [ICommandPalette, INotebookTracker, IDocumentManager],
+  requires: [ICommandPalette, IDocumentManager],
   activate: activateSearchReplacePlugin
 };
 
@@ -27,7 +26,6 @@ const plugin: JupyterLabPlugin<void> = {
 function activateSearchReplacePlugin(
   app: JupyterLab,
   palette: ICommandPalette,
-  notebookTracker: INotebookTracker,
   docManager: IDocumentManager
 ): void {
   const { shell } = app;
@@ -41,8 +39,7 @@ function activateSearchReplacePlugin(
   // Initialize model.
   const model = new SearchReplaceModel({
     shell,
-    docManager,
-    notebookTracker
+    docManager
   });
 
   panel.model = model;
