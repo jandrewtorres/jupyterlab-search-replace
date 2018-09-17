@@ -1,12 +1,12 @@
 import { VDomRenderer } from '@jupyterlab/apputils';
 
 import * as React from 'react';
-import { SearchToolsModel } from './SearchToolsModel';
+import { SearchReplaceModel } from './SearchReplaceModel';
 
 /**
  * The Finder UI Component.
  */
-export class SearchToolsPanel extends VDomRenderer<SearchToolsModel> {
+export class SearchReplacePanel extends VDomRenderer<SearchReplaceModel> {
   /**
    * Create new sidebar.
    */
@@ -22,6 +22,7 @@ export class SearchToolsPanel extends VDomRenderer<SearchToolsModel> {
   handleInputChange = event => {
     this.model.query = {
       value: event.target.value,
+
       isRegEx: false, // need to add checkbox
       ignoreCase: false // need to add checkbox
     };

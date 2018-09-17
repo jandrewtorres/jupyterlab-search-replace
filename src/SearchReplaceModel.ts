@@ -3,15 +3,15 @@ import { Widget } from '@phosphor/widgets';
 import { IDocumentManager } from '@jupyterlab/docmanager';
 import { INotebookTracker, NotebookPanel } from '@jupyterlab/notebook';
 import { ApplicationShell } from '@jupyterlab/application';
-import { SearchToolsFactoryProducer } from './SearchToolsFactory';
-import { SearchReplace } from './document-search-tools/SearchTools';
+import { SearchReplaceFactoryProducer } from './SearchReplaceFactory';
+import { SearchReplace } from './document-search-tools/SearchReplace';
 
-export class SearchToolsModel extends VDomModel {
-  _currentWidget: SearchToolsModel.ICurrentWidget;
+export class SearchReplaceModel extends VDomModel {
+  _currentWidget: SearchReplaceModel.ICurrentWidget;
   _docManager: IDocumentManager;
   _notebookTracker: INotebookTracker;
 
-  constructor(options: SearchToolsModel.IOptions) {
+  constructor(options: SearchReplaceModel.IOptions) {
     super();
     this._docManager = options.docManager;
     this._notebookTracker = options.notebookTracker;
@@ -27,9 +27,9 @@ export class SearchToolsModel extends VDomModel {
     if (type === 'notebook') {
       this._currentWidget = {
         widget: widget as NotebookPanel,
-        plugin: SearchToolsFactoryProducer.getFactory(type).createSearchTools(
-          widget as NotebookPanel
-        )
+        plugin: SearchReplaceFactoryProducer.getFactory(
+          type
+        ).createSearchReplace(widget as NotebookPanel)
       };
     }
   }
@@ -39,7 +39,7 @@ export class SearchToolsModel extends VDomModel {
   }
 }
 
-export namespace SearchToolsModel {
+export namespace SearchReplaceModel {
   export interface IOptions {
     shell: ApplicationShell;
     docManager: IDocumentManager;

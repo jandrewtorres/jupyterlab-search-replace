@@ -1,4 +1,4 @@
-import { SearchReplace } from '../SearchTools';
+import { SearchReplace } from '../SearchReplace';
 import { each } from '@phosphor/algorithm';
 import { Cell } from '@jupyterlab/cells';
 import { NotebookPanel } from '@jupyterlab/notebook';

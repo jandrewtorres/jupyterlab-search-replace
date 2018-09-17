@@ -1,7 +1,7 @@
 {
-  "name": "find-replace-extension",
+  "name": "search-replace-extension",
   "version": "0.1.0",
-  "description": "Find and replace side panel for documents and notebooks in jupyterlab.",
+  "description": "Search and replace features for documents in jupyterlab. The UI works with implementations of the ISearchReplacePlugin interface that have been added to the SearchReplaceRegistry. Notebook and editor widget plugins are provided by the extension by default.",
   "keywords": [
     "jupyter",
     "jupyterlab",
