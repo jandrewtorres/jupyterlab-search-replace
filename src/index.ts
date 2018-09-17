@@ -36,12 +36,8 @@ function activateSearchReplacePlugin(
   panel.id = namespace;
   panel.title.label = 'Search / Replace';
 
-  // Initialize model.
-  const model = new SearchReplaceModel({
-    shell,
-    docManager
-  });
-
+  // Initialize and set model.
+  const model = new SearchReplaceModel({ shell, docManager });
   panel.model = model;
 
   // Add to left area and activate.

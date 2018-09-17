@@ -6,12 +6,8 @@ import { SearchReplaceFactoryProducer } from './SearchReplaceFactory';
 import { SearchReplace } from './document-search-tools/SearchReplace';
 
 export class SearchReplaceModel extends VDomModel {
-  _currentWidget: SearchReplaceModel.ICurrentWidget;
-  _docManager: IDocumentManager;
-
   constructor(options: SearchReplaceModel.IOptions) {
     super();
-    console.log(options.docManager);
     this._docManager = options.docManager;
 
     options.shell.currentChanged.connect((sender, args) => {
@@ -38,9 +34,12 @@ export class SearchReplaceModel extends VDomModel {
     });
   }
 
-  set query(query: SearchReplace.IQuery) {
-    this._currentWidget.plugin.setQuery(query);
+  get plugin(): SearchReplace.ISearchReplacePlugin {
+    return this._currentWidget.plugin;
   }
+
+  private _currentWidget: SearchReplaceModel.ICurrentWidget;
+  private _docManager: IDocumentManager;
 }
 
 export namespace SearchReplaceModel {

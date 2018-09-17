@@ -20,12 +20,12 @@ export class SearchReplacePanel extends VDomRenderer<SearchReplaceModel> {
    * @param event
    */
   handleInputChange = event => {
-    this.model.query = {
+    this.model.plugin.setQuery({
       value: event.target.value,
 
       isRegEx: false, // need to add checkbox
       ignoreCase: false // need to add checkbox
-    };
+    });
     event.stopPropagation();
   };
 
@@ -33,7 +33,8 @@ export class SearchReplacePanel extends VDomRenderer<SearchReplaceModel> {
    * Handle 'Find' button clicked.
    * @param event
    */
-  findClicked = event => {
+  nextClicked = event => {
+    this.model.plugin.next();
     event.stopPropagation();
   };
 
@@ -41,7 +42,8 @@ export class SearchReplacePanel extends VDomRenderer<SearchReplaceModel> {
    * Handle 'Find All' button clicked.
    * @param event
    */
-  selectAllClicked = event => {
+  prevClicked = event => {
+    this.model.plugin.prev();
     event.stopPropagation();
   };
 
@@ -50,6 +52,7 @@ export class SearchReplacePanel extends VDomRenderer<SearchReplaceModel> {
    * @param event
    */
   replaceClicked = event => {
+    this.model.plugin.replace();
     event.stopPropagation();
   };
 
@@ -70,14 +73,11 @@ export class SearchReplacePanel extends VDomRenderer<SearchReplaceModel> {
           </div>
         </div>
         <div className={BUTTON_CONTAINER}>
-          <button className={BUTTON_CLASS} onClick={e => this.findClicked(e)}>
-            Find
+          <button className={BUTTON_CLASS} onClick={e => this.nextClicked(e)}>
+            Next
           </button>
-          <button
-            className={BUTTON_CLASS}
-            onClick={e => this.selectAllClicked(e)}
-          >
-            Select All
+          <button className={BUTTON_CLASS} onClick={e => this.prevClicked(e)}>
+            Prev
           </button>
         </div>
         <div className={SEARCH_CLASS}>

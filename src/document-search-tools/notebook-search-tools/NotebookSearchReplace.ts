@@ -37,12 +37,10 @@ export class NotebookSearchReplacePlugin implements ISearchReplacePlugin {
 
     if (!this._selection) {
       this._select(matches[0]);
-      console.log(matches[0]);
       return;
     }
 
     let nextIndex = (matches.indexOf(this._selection) + 1) % matches.length;
-    console.log('next index: ' + nextIndex);
     this._select(matches[nextIndex]);
   }
 
@@ -122,8 +120,6 @@ export class NotebookSearchReplacePlugin implements ISearchReplacePlugin {
         }
       );
     });
-
-    console.log(this._matches);
   }
 
   private _clearSelections(): void {
@@ -136,8 +132,9 @@ export class NotebookSearchReplacePlugin implements ISearchReplacePlugin {
   private _select(match: NotebookMatch): void {
     this._selection = match;
 
-    // Select the cell
-    this._nbPanel.content.select(match.cell);
+    // Activate/select the cell
+    match.cell.activate();
+
     let range: IRange = {
       start: match.cell.editorWidget.editor.getPositionAt(match.start),
       end: match.cell.editorWidget.editor.getPositionAt(match.end)
