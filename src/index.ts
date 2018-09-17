@@ -1,6 +1,6 @@
 import { JupyterLab, JupyterLabPlugin } from '@jupyterlab/application';
 import { ICommandPalette } from '@jupyterlab/apputils';
-import { SearchReplaceModel } from './SearchReplaceModel';
+import { SearchReplacePluginManager } from './SearchReplacePluginManager';
 import { IDocumentManager } from '@jupyterlab/docmanager';
 import { SearchReplacePanel } from './SearchReplacePanel';
 import '../style/index.css';
@@ -37,8 +37,8 @@ function activateSearchReplacePlugin(
   panel.title.label = 'Search / Replace';
 
   // Initialize and set model.
-  const model = new SearchReplaceModel({ shell, docManager });
-  panel.model = model;
+  const manager = new SearchReplacePluginManager({ shell, docManager });
+  panel.model = manager;
 
   // Add to left area and activate.
   shell.addToLeftArea(panel, { rank: 600 });

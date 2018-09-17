@@ -5,8 +5,8 @@ import { ApplicationShell } from '@jupyterlab/application';
 import { SearchReplaceFactoryProducer } from './SearchReplaceFactory';
 import { SearchReplace } from './document-search-tools/SearchReplace';
 
-export class SearchReplaceModel extends VDomModel {
-  constructor(options: SearchReplaceModel.IOptions) {
+export class SearchReplacePluginManager extends VDomModel {
+  constructor(options: SearchReplacePluginManager.IOptions) {
     super();
     this._docManager = options.docManager;
 
@@ -38,7 +38,7 @@ export class SearchReplaceModel extends VDomModel {
     return this._currentWidget.plugin;
   }
 
-  private _currentWidget: SearchReplaceModel.ICurrentWidget;
+  private _currentWidget: SearchReplacePluginManager.ICurrentWidget;
   private _docManager: IDocumentManager;
 }
 

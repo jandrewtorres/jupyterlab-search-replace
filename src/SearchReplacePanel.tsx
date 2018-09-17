@@ -1,12 +1,14 @@
 import { VDomRenderer } from '@jupyterlab/apputils';
 
 import * as React from 'react';
-import { SearchReplaceModel } from './SearchReplaceModel';
+import { SearchReplacePluginManager } from './SearchReplacePluginManager';
 
 /**
  * The Finder UI Component.
  */
-export class SearchReplacePanel extends VDomRenderer<SearchReplaceModel> {
+export class SearchReplacePanel extends VDomRenderer<
+  SearchReplacePluginManager
+> {
   /**
    * Create new sidebar.
    */
