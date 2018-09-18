@@ -42,7 +42,7 @@ export class SearchReplacePluginManager extends VDomModel {
   private _docManager: IDocumentManager;
 }
 
-export namespace SearchReplaceModel {
+export namespace SearchReplacePluginManager {
   export interface IOptions {
     shell: ApplicationShell;
     docManager: IDocumentManager;

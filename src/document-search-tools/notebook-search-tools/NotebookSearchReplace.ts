@@ -31,17 +31,23 @@ export class NotebookSearchReplacePlugin implements ISearchReplacePlugin {
     // Clear all previous selections
     this._clearSelections();
 
+    // Do nothing if no matches. TODO: disable buttons if no matches
     if (!this._hasMatches()) {
       return;
     }
 
-    if (!this._selection) {
+    if (this._selection == null) {
       this._select(matches[0]);
       return;
     }
 
-    let nextIndex = (matches.indexOf(this._selection) + 1) % matches.length;
-    this._select(matches[nextIndex]);
+    this._select(this._getNextMatch());
+  }
+
+  private _getNextMatch(): NotebookMatch {
+    return this._matches[
+      (this._matches.indexOf(this._selection) + 1) % this._matches.length
+    ];
   }
 
   prev(): void {
@@ -50,45 +56,79 @@ export class NotebookSearchReplacePlugin implements ISearchReplacePlugin {
     // Clear all previous selections
     this._clearSelections();
 
+    // Do nothing if no matches. TODO: disable buttons if no matches
     if (!this._hasMatches()) {
       return;
     }
 
-    if (!this._selection) {
+    if (this._selection == null) {
       this._select(matches[matches.length - 1]);
       return;
     }
 
-    let currIndex = matches.indexOf(this._selection);
-    let prevIndex = currIndex === 0 ? matches.length - 1 : currIndex - 1;
-    this._select(matches[prevIndex]);
+    this._select(this._getPreviousMatch());
+  }
+
+  private _getPreviousMatch() {
+    return this._matches[
+      this._matches.indexOf(this._selection) === 0
+        ? this._matches.length - 1
+        : this._matches.indexOf(this._selection) - 1
+    ];
   }
 
   all(): void {
-    // Clear all previous selections
+    // Clear all previous selections.
     this._clearSelections();
 
+    // Do nothing if no matches. TODO: disable buttons if no matches
     if (!this._hasMatches()) {
       return;
     }
 
+    // Select all matches.
     each(this._matches, (match: NotebookMatch) => {
       let editor = match.cell.editorWidget.editor;
-      let selections = editor.getSelections().concat({
-        start: editor.getPositionAt(match.start),
-        end: editor.getPositionAt(match.end)
-      });
+
+      // Get previously selected and
+      let selections: CodeEditor.IRange[];
+      selections = [
+        {
+          start: editor.getPositionAt(match.start),
+          end: editor.getPositionAt(match.end)
+        }
+      ].concat(...editor.getSelections());
+
+      // Select the match's cell and set selections.
       this._nbPanel.content.select(match.cell);
       editor.setSelections(selections);
     });
   }
 
-  replace(): void {
-    console.log('replace');
+  replace(replaceValue: string): void {
+    this._clearSelections();
+
+    let editorValue = this._selection.cell.editorWidget.editor.model.value;
+    let selectionIndex = this._matches.indexOf(this._selection);
+    let selectionLength = this._selection.end - this._selection.start;
+
+    // Replace. Set _isReplacing to true while changing editor value so it
+    // it does not trigger _updateMatches.
+    this._isReplacing = true;
+    editorValue.remove(this._selection.start, this._selection.end);
+    editorValue.insert(this._selection.start, replaceValue);
+    this._isReplacing = false;
+
+    // Remove the replaced match.
+    this._matches.splice(selectionIndex, selectionLength);
+
+    if (this._hasMatches()) {
+      this.next();
+    }
   }
 
-  replaceAll(): void {
-    console.log('replace');
+  replaceAll(replaceValue: string): void {
+    console.log('replaceAll');
   }
 
   private _connectToNotebookChangeSignals() {
@@ -100,13 +140,19 @@ export class NotebookSearchReplacePlugin implements ISearchReplacePlugin {
     // Connect to cell model value changes.
     each(this._cells(), (cell: Cell) => {
       cell.model.value.changed.connect((sender, args) => {
-        this._updateMatches();
+        if (!this._isReplacing) {
+          this._updateMatches();
+        }
       });
     });
   }
 
   private _updateMatches() {
     this._matches = [];
+
+    if (this._query == null) {
+      return;
+    }
 
     if (this._query.value.length === 0) {
       return;
@@ -120,16 +166,26 @@ export class NotebookSearchReplacePlugin implements ISearchReplacePlugin {
         }
       );
     });
+    console.log('update matches: ' + this._matches);
   }
 
   private _clearSelections(): void {
+    // Deselect all cells in notebook.
     this._nbPanel.content.deselectAll();
+
+    // Remove selections from all cells in notebook;
     each(this._cells(), (cell: Cell) => {
       cell.editor.setSelections([]);
     });
   }
 
   private _select(match: NotebookMatch): void {
+    if (match == null) {
+      console.log('selecting null');
+      this._selection = null;
+      return;
+    }
+    console.log('selecting match @ index: ' + this._matches.indexOf(match));
     this._selection = match;
 
     // Activate/select the cell
@@ -139,6 +195,7 @@ export class NotebookSearchReplacePlugin implements ISearchReplacePlugin {
       start: match.cell.editorWidget.editor.getPositionAt(match.start),
       end: match.cell.editorWidget.editor.getPositionAt(match.end)
     };
+
     // Select the match in the cell
     match.cell.editorWidget.editor.setSelection(range);
   }
@@ -155,6 +212,7 @@ export class NotebookSearchReplacePlugin implements ISearchReplacePlugin {
   private _query: IQuery;
   private _matches: NotebookMatch[];
   private _selection: NotebookMatch;
+  private _isReplacing: boolean = false;
 }
 
 export class NotebookMatch implements IMatch {

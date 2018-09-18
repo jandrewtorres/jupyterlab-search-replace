@@ -1,7 +1,6 @@
 import { VDomRenderer } from '@jupyterlab/apputils';
-
-import * as React from 'react';
 import { SearchReplacePluginManager } from './SearchReplacePluginManager';
+import * as React from 'react';
 
 /**
  * The Finder UI Component.
@@ -9,12 +8,17 @@ import { SearchReplacePluginManager } from './SearchReplacePluginManager';
 export class SearchReplacePanel extends VDomRenderer<
   SearchReplacePluginManager
 > {
-  /**
+  // private _searchInput = React.createRef<HTMLInputElement>();
+  /*
    * Create new sidebar.
    */
   constructor() {
     super();
     this.addClass(FINDER_CLASS);
+  }
+
+  focusSearchInput() {
+    // this._searchInput.current.focus();
   }
 
   /**
@@ -24,10 +28,11 @@ export class SearchReplacePanel extends VDomRenderer<
   handleInputChange = event => {
     this.model.plugin.setQuery({
       value: event.target.value,
-
       isRegEx: false, // need to add checkbox
       ignoreCase: false // need to add checkbox
     });
+    this.focusSearchInput();
+
     event.stopPropagation();
   };
 
@@ -54,12 +59,21 @@ export class SearchReplacePanel extends VDomRenderer<
    * @param event
    */
   replaceClicked = event => {
-    this.model.plugin.replace();
+    this.model.plugin.replace('A');
     event.stopPropagation();
   };
 
   /**
-   * Render FinderPanel React Element
+   * Handle 'Replace All' button clicked.
+   * @param event
+   */
+  replaceAllClicked = event => {
+    this.model.plugin.replaceAll('A');
+    event.stopPropagation();
+  };
+
+  /**
+   * Render SearchReplace React Element UI
    */
   protected render(): React.ReactElement<any> {
     return (
@@ -69,8 +83,9 @@ export class SearchReplacePanel extends VDomRenderer<
             <input
               className={INPUT_CLASS}
               spellCheck={false}
-              placeholder={'Find...'}
+              placeholder={'Search...'}
               onChange={e => this.handleInputChange(e)}
+              // ref={this._searchInput}
             />
           </div>
         </div>

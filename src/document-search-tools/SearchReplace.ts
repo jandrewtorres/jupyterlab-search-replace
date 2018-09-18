@@ -6,8 +6,8 @@ export namespace SearchReplace {
     prev: () => void;
     all: () => void;
 
-    replace?: () => void;
-    replaceAll?: () => void;
+    replace?: (replaceValue: string) => void;
+    replaceAll?: (replaceValue: string) => void;
   }
 
   export interface IMatch {
