@@ -24,14 +24,15 @@
     "url": "https://github.com/jandrewtorres/jupyterlab-find-replace-extension.git"
   },
   "scripts": {
+    "start": "./node_modules/.bin/concurrently \"yarn run watch\" \"jupyter lab --watch\"",
     "build": "tsc",
     "clean": "rimraf lib",
     "watch": "tsc -w",
-    "prepare": "npm run clean && npm run build",
+    "prepare": "yarn run clean && yarn run build",
     "precommit": "lint-staged",
     "postcommit": "git update-index --again",
     "tslint": "tslint --force --fix -c tslint.json '**/*{.ts,.tsx}'",
-    "prettier": "prettier --write '**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}'"
+    "prettier": "prettier --write 'src/**/*{.ts,.tsx,.js,.jsx,.css,.json,.md}'"
   },
   "dependencies": {
     "@jupyterlab/application": "^0.18.5",
@@ -48,12 +49,13 @@
     "@phosphor/messaging": "^1.2.2",
     "@phosphor/signaling": "^1.2.2",
     "@phosphor/widgets": "^1.6.0",
-    "react": "~16.4.0",
-    "react-dom": "~16.4.0"
+    "react": "~16.5.1",
+    "react-dom": "~16.5.1"
   },
   "devDependencies": {
-    "@types/react": "~16.0.19",
+    "@types/react": "~16.4.14",
     "@types/react-dom": "~16.0.2",
+    "concurrently": "^4.0.1",
     "husky": "^0.14.3",
     "lint-staged": "^7.2.0",
     "prettier": "^1.14.0",

@@ -1,5 +1,6 @@
 {
   "compilerOptions": {
+    "baseUrl": ".",
     "declaration": true,
     "lib": ["es2015", "dom"],
     "module": "commonjs",
@@ -12,7 +13,11 @@
     "strict": true,
     "strictNullChecks": false,
     "types": [],
-    "jsx": "react"
+    "jsx": "react",
+    "paths": {
+      "react": ["node_modules/@types/react"],
+      "react-dom": ["node_modules/@types/react-dom"]
+    }
   },
-  "include": ["src/*"]
+  "include": ["src/**/*"]
 }
