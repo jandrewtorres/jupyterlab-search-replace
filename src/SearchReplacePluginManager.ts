@@ -1,28 +1,25 @@
-import { MainAreaWidget, VDomModel } from '@jupyterlab/apputils';
+import { MainAreaWidget } from '@jupyterlab/apputils';
 import { IDocumentManager } from '@jupyterlab/docmanager';
 import { NotebookPanel } from '@jupyterlab/notebook';
 import { ApplicationShell } from '@jupyterlab/application';
 import { SearchReplaceFactoryProducer } from './SearchReplaceFactory';
 import { SearchReplace } from './document-search-tools/SearchReplace';
+import ISearchReplacePlugin = SearchReplace.ISearchReplacePlugin;
+import IQuery = SearchReplace.IQuery;
 
-export class SearchReplacePluginManager extends VDomModel {
+export class SearchReplacePluginManager implements ISearchReplacePlugin {
   constructor(options: SearchReplacePluginManager.IOptions) {
-    super();
     this._docManager = options.docManager;
 
     options.shell.currentChanged.connect((sender, args) => {
-      this.currentWidget = options.shell.currentWidget as MainAreaWidget;
+      this._onCurrentChanged(options.shell.currentWidget as MainAreaWidget);
     });
   }
 
-  set currentWidget(widget: MainAreaWidget | undefined | null) {
-    if (widget == null) {
-      this._currentWidget = null;
-      return;
-    }
-
+  private _onCurrentChanged(widget: MainAreaWidget | undefined | null) {
     widget.revealed.then(() => {
-      const type = this._docManager.contextForWidget(widget).contentsModel.type;
+      const context = this._docManager.contextForWidget(widget);
+      const type = context != null ? context.contentsModel.type : null;
       if (type === 'notebook') {
         this._currentWidget = {
           widget: widget as NotebookPanel,
@@ -30,16 +27,33 @@ export class SearchReplacePluginManager extends VDomModel {
             type
           ).createSearchReplace(widget as NotebookPanel)
         };
+      } else {
+        this._currentWidget = null;
+        return;
       }
-    });
-  }
 
-  get plugin(): SearchReplace.ISearchReplacePlugin {
-    return this._currentWidget.plugin;
+      this.setQuery = (query: IQuery) => {
+        this._currentWidget.plugin.setQuery(query);
+      };
+      this.all = () => this._currentWidget.plugin.all();
+      this.next = () => this._currentWidget.plugin.next();
+      this.prev = () => this._currentWidget.plugin.prev();
+      this.replace = (val: string) => this._currentWidget.plugin.replace(val);
+      this.replaceAll = (val: string) => {
+        this._currentWidget.plugin.replaceAll(val);
+      };
+    });
   }
 
   private _currentWidget: SearchReplacePluginManager.ICurrentWidget;
   private _docManager: IDocumentManager;
+
+  all: () => void;
+  next: () => void;
+  prev: () => void;
+  replace: (replaceValue: string) => void;
+  replaceAll: (replaceValue: string) => void;
+  setQuery: (query: SearchReplace.IQuery) => void;
 }
 
 export namespace SearchReplacePluginManager {

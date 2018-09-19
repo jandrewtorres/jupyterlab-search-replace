@@ -42,6 +42,7 @@ export class NotebookSearchReplacePlugin implements ISearchReplacePlugin {
     }
 
     this._select(this._getNextMatch());
+    this._nbPanel.content.mode = 'command';
   }
 
   private _getNextMatch(): NotebookMatch {
@@ -187,9 +188,6 @@ export class NotebookSearchReplacePlugin implements ISearchReplacePlugin {
     }
     console.log('selecting match @ index: ' + this._matches.indexOf(match));
     this._selection = match;
-
-    // Activate/select the cell
-    match.cell.activate();
 
     let range: IRange = {
       start: match.cell.editorWidget.editor.getPositionAt(match.start),

@@ -2,8 +2,8 @@ import { JupyterLab, JupyterLabPlugin } from '@jupyterlab/application';
 import { ICommandPalette } from '@jupyterlab/apputils';
 import { SearchReplacePluginManager } from './SearchReplacePluginManager';
 import { IDocumentManager } from '@jupyterlab/docmanager';
-import { SearchReplacePanel } from './SearchReplacePanel';
 import '../style/index.css';
+import { SearchReplaceWidget } from './components/Widget';
 
 /**
  * Constants.
@@ -31,18 +31,17 @@ function activateSearchReplacePlugin(
   const { shell } = app;
   const namespace = 'search-replace';
 
-  // Initialize view panel.
-  const panel = new SearchReplacePanel();
-  panel.id = namespace;
-  panel.title.label = 'Search / Replace';
-
   // Initialize and set model.
-  const manager = new SearchReplacePluginManager({ shell, docManager });
-  panel.model = manager;
+  const pluginManager = new SearchReplacePluginManager({ shell, docManager });
+
+  // Initialize view;
+  const widget = new SearchReplaceWidget(pluginManager);
+  widget.id = namespace;
+  widget.title.label = 'Search / Replace';
 
   // Add to left area and activate.
-  shell.addToLeftArea(panel, { rank: 600 });
-  shell.activateById(panel.id);
+  shell.addToLeftArea(widget, { rank: 600 });
+  shell.activateById(widget.id);
 }
 
 /**
